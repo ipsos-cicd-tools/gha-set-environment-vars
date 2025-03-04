@@ -1,31 +1,34 @@
-# Just an example
-name: Create Release
+name: Enivronment Prepare
 description: Create Github Release based commit tag
-inputs:
-  token:
-    description: "Github Token"
-    required: true
 runs:
   using: composite
   steps:
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
       with:
-        node-version: 20
+        fetch-depth: 2
 
-    - name: Install Semantic-Release
+    - name: Fetch target branch
       shell: bash
-      run: npm install -g semantic-release @semantic-release/github
+      if: github.event_name == 'pull_request'
+      run: git fetch origin ${{ github.base_ref }}:${{ github.base_ref }}
 
-    - name: Create Release
+    - id: set-environment-and-path
       shell: bash
-      env:
-        GITHUB_TOKEN: $token
-        VERSION: ${version}"
       run: |
-        npx semantic-release --debug \
-        -b main \
-        -p @semantic-release/commit-analyzer \
-        -p @semantic-release/release-notes-generator \
-        -p @semantic-release/github \
-        --tag-format "${VERSION}"
+        TARGET_BRANCH=${{ github.event_name == 'pull_request' && github.base_ref || github.ref_name}}
+        if [ "$TARGET_BRANCH" = "main" ]; then
+          ENVIRONMENT='["production"]'
+          SHORT_ENV='["prd"]'
+        elif [ "$TARGET_BRANCH" = "development" ]; then
+          ENVIRONMENT='["development"]'
+          SHORT_ENV='["dev"]'
+        elif [ "$TARGET_BRANCH" = "staging" ]; then
+          ENVIRONMENT='["staging"]'
+          SHORT_ENV='["stg"]'
+        fi
+        echo "${ENVIRONMENT}"
+        echo "${SHORT_ENV}"
+        echo "ENVIRONMENT=${ENVIRONMENT}" >> $GITHUB_OUTPUT
+        echo "SHORT_ENV=${SHORT_ENV}" >> $GITHUB_OUTPUT
+        echo "target_branch=${TARGET_BRANCH}" >> $GITHUB_OUTPUT
