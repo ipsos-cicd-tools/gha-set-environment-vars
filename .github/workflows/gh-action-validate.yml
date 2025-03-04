@@ -1,0 +1,29 @@
+name: 'Validate Github Action yaml'
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: write
+  actions: read
+  pages: write
+  id-token: write
+  security-events: write
+  pull-requests: write
+
+jobs:
+  release:
+    name: 'Validate GH Action'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Validate yaml file
+      run: yamllint action.yml

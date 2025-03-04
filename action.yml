@@ -1,0 +1,31 @@
+# Just an example
+name: Create Release
+description: Create Github Release based commit tag
+inputs:
+  token:
+    description: "Github Token"
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Install Semantic-Release
+      shell: bash
+      run: npm install -g semantic-release @semantic-release/github
+
+    - name: Create Release
+      shell: bash
+      env:
+        GITHUB_TOKEN: $token
+        VERSION: ${version}"
+      run: |
+        npx semantic-release --debug \
+        -b main \
+        -p @semantic-release/commit-analyzer \
+        -p @semantic-release/release-notes-generator \
+        -p @semantic-release/github \
+        --tag-format "${VERSION}"
