@@ -1,13 +1,12 @@
+# Version: 1.0
+# released 2025.03.04: initial release
+# yamllint disable rule:line-length
+---
 name: Enivronment Prepare
 description: Create Github Release based commit tag
 runs:
   using: composite
   steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 2
-
     - name: Fetch target branch
       shell: bash
       if: github.event_name == 'pull_request'
