@@ -1,29 +1,30 @@
-# Custom Github Action Template
+# gha-set-environment-vars
 
-This repository serves as a template for creating custom Github Actions
+Sets environment variables based on the Github repo branch.
 
-## Setup Instructions
+Outputs:
+* environment = "*[development]*"
+* short_env = "*[dev]*"
 
-1. Create new repo in the **ipsos-cicd-tools** Github org using this repo as the template in the drop down option. 
-    - Use the naming schema "gha-ACTION_NAME"
-
-2. Replace the existing **action.yml** file in the root directory with your own code
-
-3. Branch protection is enabled for `main` so any changes will need to be made via Pull Requests 
-
-4. Swap out this README for your own that is relevant to the action. Have it provide a descrition of what the action does as well as an example of use.
+## Example Use
 
 ```
-steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+jobs:
+  prepare:
+    name: Get Branch & set Env vars
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.set-environment-and-path.outputs.environment }}
+      short_env: ${{ steps.set-environment-and-path.outputs.short_env }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-
-    - name: Release Action
-      uses: "git::https://github.com/ipsos-cicd-tools/<repo name>?ref=<version number>"
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - id: set-environment-and-path
+        uses: "ipsos-cicd-tools/gha-set-environment-vars@1.0.0"
 ```
+
+
 
 ## Workflow Overview
 
