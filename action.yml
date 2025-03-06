@@ -4,6 +4,15 @@
 ---
 name: Enivronment Prepare
 description: Create Github Release based commit tag
+
+outputs:
+  environment:
+    description: "Deployment environment"
+    value: ${{ steps.set-environment-and-path.outputs.ENVIRONMENT }}
+  short_env:
+    description: "Short environment name"
+    value: ${{ steps.set-environment-and-path.outputs.SHORT_ENV }}
+    
 runs:
   using: composite
   steps:
