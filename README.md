@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v4
 
       - id: set-environment-and-path
-        uses: "ipsos-cicd-tools/gha-set-environment-vars@1.0.0"
+        uses: "ipsos-cicd-tools/gha-set-environment-vars@1.1.0"
 ```
 
 
